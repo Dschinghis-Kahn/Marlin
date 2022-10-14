@@ -99,8 +99,8 @@ struct Flags {
   void set(const int n)                    { b |=  (bits_t)_BV(n); }
   void clear(const int n)                  { b &= ~(bits_t)_BV(n); }
   bool test(const int n) const             { return TEST(b, n); }
-  const bool operator[](const int n)       { return test(n); }
-  const bool operator[](const int n) const { return test(n); }
+  bool operator[](const int n)             { return test(n); }
+  bool operator[](const int n) const       { return test(n); }
   int size() const                         { return sizeof(b); }
 };
 
@@ -347,6 +347,10 @@ struct XYval {
   FI operator T* ()                                     { return pos; }
   // If any element is true then it's true
   FI operator bool()                                    { return x || y; }
+  // Smallest element
+  FI T small()                                    const { return _MIN(x, y); }
+  // Largest element
+  FI T large()                                    const { return _MAX(x, y); }
 
   // Explicit copy and copies with conversion
   FI XYval<T>           copy()                    const { return *this; }
@@ -500,6 +504,10 @@ struct XYZval {
   FI operator T* ()                                    { return pos; }
   // If any element is true then it's true
   FI operator bool()                                   { return NUM_AXIS_GANG(x, || y, || z, || i, || j, || k, || u, || v, || w); }
+  // Smallest element
+  FI T small()                                   const { return _MIN(NUM_AXIS_LIST(x, y, z, i, j, k, u, v, w)); }
+  // Largest element
+  FI T large()                                   const { return _MAX(NUM_AXIS_LIST(x, y, z, i, j, k, u, v, w)); }
 
   // Explicit copy and copies with conversion
   FI XYZval<T>          copy()                   const { XYZval<T> o = *this; return o; }
@@ -651,6 +659,10 @@ struct XYZEval {
   FI operator T* ()                                      { return pos; }
   // If any element is true then it's true
   FI operator bool()                                     { return 0 LOGICAL_AXIS_GANG(|| e, || x, || y, || z, || i, || j, || k, || u, || v, || w); }
+  // Smallest element
+  FI T small()                                     const { return _MIN(LOGICAL_AXIS_LIST(e, x, y, z, i, j, k, u, v, w)); }
+  // Largest element
+  FI T large()                                     const { return _MAX(LOGICAL_AXIS_LIST(e, x, y, z, i, j, k, u, v, w)); }
 
   // Explicit copy and copies with conversion
   FI XYZEval<T>          copy()  const { XYZEval<T> v = *this; return v; }
